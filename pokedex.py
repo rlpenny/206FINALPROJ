@@ -9,9 +9,6 @@ from PIL import Image
 import urllib.request
 
 
-poke_dict = json.load(open('PokemonFile.json'))
-
-
 
 #cacheing for pokemon data from pokeapi
 CACHE_FNAME = 'data.json'
@@ -112,6 +109,67 @@ def get_json_from_api(pokemon_name):
     print('OVERALL STATS:', total_stat)
     print('_____' * 5)
     return pokemon_list
+
+
+def get_json_from_api_no_print(pokemon_name):
+    try:
+        getWithCaching(pokemon_name)
+    except:
+        url = "http://pokeapi.co/api/v2/pokemon/{}/".format(pokemon_name)
+        response = requests.get(url)
+        data = response.json()
+
+
+    url = "http://pokeapi.co/api/v2/pokemon/{}/".format(pokemon_name)
+    response = requests.get(url)
+    data = response.json()
+
+    pokemon_list = []
+
+    pokemon_name = data['name']
+    pokemon_list.append(pokemon_name)
+
+    type_1 = data['types'][0]['type']['name']
+    pokemon_list.append(type_1)
+
+    try:
+        type_2 = data['types'][1]['type']['name']
+        pokemon_list.append(type_2)
+    except:
+        type_2 ='N/A'
+        pokemon_list.append(type_2)
+
+    speed = data['stats'][0]['base_stat']
+    pokemon_list.append(speed)
+
+    defense = data['stats'][3]['base_stat']
+    pokemon_list.append(defense)
+
+    attack = data['stats'][4]['base_stat']
+    pokemon_list.append(attack)
+
+    special_defense = data['stats'][1]['base_stat']
+    pokemon_list.append(special_defense)
+
+    special_attack = data['stats'][2]['base_stat']
+    pokemon_list.append(special_attack)
+
+    height = data['height']
+    pokemon_list.append(height)
+
+    weight = data['weight']
+    pokemon_list.append(weight)
+
+    total_stat = speed + defense + attack + special_defense + special_attack
+    pokemon_list.append(total_stat)
+
+    return pokemon_list
+
+
+
+
+
+
 
 
 #creates Pokemon and Descriptions tables
@@ -291,6 +349,99 @@ def create_comparison_plotly(pokemon_name_1, pokemon_name_2):
     return py.plot(fig, filename='compare_pokemon')
 
 
+def create_team_graph(pokemon1, pokemon2, pokemon3, pokemon4, pokemon5, pokemon6):
+    pokemon_1 = get_json_from_api_no_print(pokemon1)
+    pokemon_2 = get_json_from_api_no_print(pokemon2)
+    pokemon_3 = get_json_from_api_no_print(pokemon3)
+    pokemon_4 = get_json_from_api_no_print(pokemon4)
+    pokemon_5 = get_json_from_api_no_print(pokemon5)
+    pokemon_6 = get_json_from_api_no_print(pokemon6)
+
+    pokemon1_name = pokemon_1[0]
+    pokemon1_speed = pokemon_1[3]
+    pokemon1_defense = pokemon_1[4]
+    pokemon1_attack = pokemon_1[5]
+    pokemon1_specialdefense = pokemon_1[6]
+    pokemon1_specialattack = pokemon_1[7]
+
+    pokemon2_name = pokemon_2[0]
+    pokemon2_speed = pokemon_2[3]
+    pokemon2_defense = pokemon_2[4]
+    pokemon2_attack = pokemon_2[5]
+    pokemon2_specialdefense = pokemon_2[6]
+    pokemon2_specialattack = pokemon_2[7]
+
+    pokemon3_name = pokemon_3[0]
+    pokemon3_speed = pokemon_3[3]
+    pokemon3_defense = pokemon_3[4]
+    pokemon3_attack = pokemon_3[5]
+    pokemon3_specialdefense = pokemon_3[6]
+    pokemon3_specialattack = pokemon_3[7]
+
+    pokemon4_name = pokemon_4[0]
+    pokemon4_speed = pokemon_4[3]
+    pokemon4_defense = pokemon_4[4]
+    pokemon4_attack = pokemon_4[5]
+    pokemon4_specialdefense = pokemon_4[6]
+    pokemon4_specialattack = pokemon_4[7]
+
+    pokemon5_name = pokemon_5[0]
+    pokemon5_speed = pokemon_5[3]
+    pokemon5_defense = pokemon_5[4]
+    pokemon5_attack = pokemon_5[5]
+    pokemon5_specialdefense = pokemon_5[6]
+    pokemon5_specialattack = pokemon_5[7]
+
+    pokemon6_name = pokemon_6[0]
+    pokemon6_speed = pokemon_6[3]
+    pokemon6_defense = pokemon_6[4]
+    pokemon6_attack = pokemon_6[5]
+    pokemon6_specialdefense = pokemon_6[6]
+    pokemon6_specialattack = pokemon_6[7]
+
+
+    trace1 = go.Bar(
+        x=['ATTACK','SPEED','DEFENSE','SPECIAL ATTACK', 'SPECIAL DEFENSE'],
+        y=[pokemon1_attack, pokemon1_speed, pokemon1_defense, pokemon1_specialattack,pokemon1_specialdefense],
+        name= pokemon1_name
+    )
+    trace2 = go.Bar(
+        x=['ATTACK','SPEED','DEFENSE','SPECIAL ATTACK', 'SPECIAL DEFENSE'],
+        y=[pokemon2_attack, pokemon2_speed, pokemon2_defense, pokemon2_specialattack,pokemon2_specialdefense],
+        name= pokemon2_name
+    )
+
+    trace3 = go.Bar(
+        x=['ATTACK','SPEED','DEFENSE','SPECIAL ATTACK', 'SPECIAL DEFENSE'],
+        y=[pokemon3_attack, pokemon3_speed, pokemon3_defense, pokemon3_specialattack,pokemon3_specialdefense],
+        name= pokemon3_name
+    )
+    trace4 = go.Bar(
+        x=['ATTACK','SPEED','DEFENSE','SPECIAL ATTACK', 'SPECIAL DEFENSE'],
+        y=[pokemon4_attack, pokemon4_speed, pokemon4_defense, pokemon4_specialattack,pokemon4_specialdefense],
+        name= pokemon4_name
+    )
+    trace5 = go.Bar(
+        x=['ATTACK','SPEED','DEFENSE','SPECIAL ATTACK', 'SPECIAL DEFENSE'],
+        y=[pokemon5_attack, pokemon5_speed, pokemon5_defense, pokemon5_specialattack,pokemon5_specialdefense],
+        name= pokemon5_name
+    )
+    trace6 = go.Bar(
+        x=['ATTACK','SPEED','DEFENSE','SPECIAL ATTACK', 'SPECIAL DEFENSE'],
+        y=[pokemon6_attack, pokemon6_speed, pokemon6_defense, pokemon6_specialattack,pokemon6_specialdefense],
+        name=pokemon6_name
+    )
+
+    data = [trace1, trace2, trace3, trace4, trace5, trace6]
+    layout = go.Layout(
+        barmode='group'
+    )
+
+    fig = go.Figure(data=data, layout=layout)
+    return py.plot(fig, filename='grouped-bar')
+
+
+
 #gets top ten pokemon from whole database
 def topTen():
     conn = sqlite3.connect('pokemon.db')
@@ -308,7 +459,7 @@ def topTen():
         print(row[0].upper(),'Type:', row[1].upper(), 'Total Stats:', row[2])
         print('Attack:', row[3], 'Defense:', row[4], 'Speed:', row[5], 'Special Attack:', row[6], 'Special Defense:', row[7])
         print('__________' * 3)
-        count = count +1
+        count = count + 1
 
 #gets top ten pokemon by type
 def topByType(type):
@@ -330,6 +481,7 @@ def topByType(type):
         print('__________' * 3)
         count = count +1
 
+poke_dict = json.load(open('PokemonFile.json'))
 
 #code for interaction
 def interactive_prompt():
@@ -341,6 +493,7 @@ def interactive_prompt():
     print("'info'     + 'pokemon name' to see a description")
     print("'compare1' + 'pokemon name' to see their stats in a graph")
     print("'compare2' + 'two pokemon names' to compare their stats")
+    print("'compare-team + 'six pokemon names' to compare your teams stats")
     print("'type'     + 'name of type' to see top pokemon of this type")
     print("'top pokemon' +  to see the top pokemon of this generation")
     print("Need a reminder? Type 'all pokemon' to see a complete list!")
@@ -380,6 +533,15 @@ def interactive_prompt():
             pokemon_name_1 = response.split()[1]
             pokemon_name_2 = response.split()[2]
             create_comparison_plotly(pokemon_name_1, pokemon_name_2)
+
+        if response.split()[0] == 'compare-team':
+            pokemon1 = response.split()[1]
+            pokemon2 = response.split()[2]
+            pokemon3 = response.split()[3]
+            pokemon4 = response.split()[4]
+            pokemon5 = response.split()[5]
+            pokemon6 = response.split()[6]
+            create_team_graph(pokemon1,pokemon2,pokemon3,pokemon4,pokemon5,pokemon6)
 
         if response == 'top pokemon':
             topTen()
