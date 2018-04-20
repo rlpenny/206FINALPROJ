@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 import plotly.plotly as py
 import plotly.graph_objs as go
 from PIL import Image
-import image_scraper
+import urllib.request
 
 
 poke_dict = json.load(open('PokemonFile.json'))
@@ -227,20 +227,22 @@ def populate_pokemon():
 
 def get_pokemon_sprite(pokemon_name):
     URL = "https://www.pokemon.com/us/pokedex/{}".format(pokemon_name)
-    saved = "1.png"
-
-    image_scraper.scrape_images(URL)
+    image_file = open(PokemonImages, 'r')
+    cache_contents = cache_file.read()
+    print(image_file)
 
     try:
-        im = Image.open("1.png")
+        im = Image.open("{}.png".format(pokemon_name))
+        im.show()
     except:
         print("Unable to load image")
 
-get_pokemon_sprite("bulbasaur")
-    # resource = urllib.urlopen()
-    # output = open("file01.jpg","wb")
-    # output.write(resource.read())
-    # output.close()
+
+
+
+
+#get_pokemon_sprite("bulbasaur")
+
 
 #creates a single scatter plot for one pokemon
 def create_individual_plotly(pokemon_name_1):
