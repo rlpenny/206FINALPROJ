@@ -19,4 +19,4 @@ setproctitle==1.1.10
 SimplePool==0.1
 six==1.11.0
 traitlets==4.3.2
-urllib3==1.22
+urllib3==1.24.2
